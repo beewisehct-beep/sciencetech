@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sciencetech × HEALL — ESG Dashboard</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#0B1929;color:#E2EAF4;min-height:100vh;display:flex;overflow:hidden}
+.sidebar{width:220px;flex-shrink:0;background:#0E2035;border-right:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;padding:20px 0;height:100vh}
+.logo-row{padding:0 20px 20px;border-bottom:1px solid rgba(255,255,255,0.07);margin-bottom:16px}
+.logo-badge{display:flex;align-items:center;gap:8px}
+.logo-h{width:32px;height:32px;background:#1DB074;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#fff}
+.logo-text{font-size:13px;font-weight:600;color:#E2EAF4;line-height:1.2}
+.logo-sub{font-size:10px;color:#6B8BA4;font-weight:400}
+.nav-label{font-size:10px;color:#4A6580;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:0 20px;margin-bottom:6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13px;color:#8AACBF;cursor:pointer;border-left:2px solid transparent;transition:all .15s}
+.nav-item:hover{color:#E2EAF4;background:rgba(29,176,116,0.06)}
+.nav-item.active{color:#1DB074;background:rgba(29,176,116,0.1);border-left-color:#1DB074}
+.nav-item i{font-size:16px}
+.sidebar-devices{padding:16px 20px 0;flex:1;overflow-y:auto}
+.dev-header{font-size:10px;color:#4A6580;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.device-row{background:#122538;border:1px solid rgba(255,255,255,0.07);border-radius:10px;padding:12px;margin-bottom:8px}
+.device-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.device-name{font-size:12px;font-weight:600;color:#C8DAE8}
+.pulse-dot{width:7px;height:7px;border-radius:50%;background:#1DB074;flex-shrink:0;animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.device-tag{font-size:10px;color:#4A8C72;background:rgba(29,176,116,0.12);border-radius:4px;padding:2px 7px;font-weight:500}
+.device-metrics{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.d-chip{font-size:9.5px;color:#6B8BA4;background:rgba(255,255,255,0.05);border-radius:4px;padding:2px 6px}
+.iot-row{display:flex;align-items:center;gap:5px;margin-top:6px}
+.iot-text{font-size:9.5px;color:#1DB074;font-weight:600}
+.main{flex:1;display:flex;flex-direction:column;overflow:auto;height:100vh}
+.topbar{padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between;background:#0B1929;flex-shrink:0}
+.page-title{font-size:16px;font-weight:600;color:#E2EAF4}
+.page-sub{font-size:12px;color:#4A6580;margin-top:2px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.time-badge{font-family:'DM Mono',monospace;font-size:11px;color:#1DB074;background:rgba(29,176,116,0.12);border:1px solid rgba(29,176,116,0.25);border-radius:6px;padding:5px 10px}
+.live-pill{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#1DB074;background:rgba(29,176,116,0.1);border:1px solid rgba(29,176,116,0.2);border-radius:20px;padding:4px 10px}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#1DB074;animation:blink 1.5s ease-in-out infinite}
+.content{padding:20px 24px;display:flex;flex-direction:column;gap:18px;overflow-y:auto}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi{background:#0E2035;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px}
+.kpi-label{font-size:11px;color:#4A6580;font-weight:500;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.kpi-label i{font-size:14px}
+.kpi-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:500;color:#E2EAF4;line-height:1}
+.kpi-unit{font-size:12px;color:#4A6580;margin-left:4px}
+.kpi-change{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:4px}
+.up{color:#1DB074}.down{color:#E24B4A}
+.kpi.green{border-top:2px solid #1DB074}
+.kpi.amber{border-top:2px solid #EF9F27}
+.kpi.blue{border-top:2px solid #378ADD}
+.kpi.red{border-top:2px solid #E24B4A}
+.mid-row{display:grid;grid-template-columns:1fr 320px;gap:14px}
+.card{background:#0E2035;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:18px}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:600;color:#C8DAE8;display:flex;align-items:center;gap:8px}
+.card-title i{font-size:16px;color:#1DB074}
+.legend-row{display:flex;gap:14px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#6B8BA4}
+.leg-sq{width:8px;height:8px;border-radius:2px}
+.device-list-card{display:flex;flex-direction:column;gap:10px}
+.dvc{background:#122538;border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:14px}
+.dvc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dvc-name{font-size:13px;font-weight:600;color:#C8DAE8}
+.status-on{font-size:10px;font-weight:600;color:#1DB074;background:rgba(29,176,116,0.12);border-radius:20px;padding:3px 9px}
+.dvc-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dvc-stat-label{font-size:10px;color:#4A6580;margin-bottom:2px}
+.dvc-stat-val{font-family:'DM Mono',monospace;font-size:14px;font-weight:500;color:#E2EAF4}
+.bar-mini{height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:4px;overflow:hidden}
+.bar-fill{height:100%;border-radius:2px;transition:width .8s ease}
+.bot-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.report-rows{display:flex;flex-direction:column;gap:8px}
+.rep-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#122538;border-radius:8px;border:1px solid rgba(255,255,255,0.05)}
+.rep-left{display:flex;align-items:center;gap:10px}
+.rep-icon{width:30px;height:30px;border-radius:8px;background:rgba(29,176,116,0.15);display:flex;align-items:center;justify-content:center}
+.rep-icon i{font-size:16px;color:#1DB074}
+.rep-name{font-size:12px;font-weight:500;color:#C8DAE8}
+.rep-date{font-size:10px;color:#4A6580;margin-top:2px}
+.rep-badge{font-size:10px;font-weight:600;border-radius:4px;padding:2px 8px}
+.badge-green{color:#1DB074;background:rgba(29,176,116,0.12)}
+.badge-blue{color:#378ADD;background:rgba(55,138,221,0.12)}
+.badge-amber{color:#EF9F27;background:rgba(239,159,39,0.12)}
+.alerts-list{display:flex;flex-direction:column;gap:8px}
+.alert-row{display:flex;gap:10px;padding:10px 12px;background:#122538;border-radius:8px;border:1px solid rgba(255,255,255,0.05);border-left:2px solid transparent}
+.alert-row.ok{border-left-color:#1DB074}
+.alert-row.warn{border-left-color:#EF9F27}
+.alert-row.info{border-left-color:#378ADD}
+.alert-icon i{font-size:16px}
+.alert-row.ok .alert-icon i{color:#1DB074}
+.alert-row.warn .alert-icon i{color:#EF9F27}
+.alert-row.info .alert-icon i{color:#378ADD}
+.alert-msg{font-size:12px;color:#C8DAE8;font-weight:500}
+.alert-time{font-size:10px;color:#4A6580;margin-top:2px}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo-row">
+    <div class="logo-badge">
+      <div class="logo-h">H</div>
+      <div>
+        <div class="logo-text">HEALL</div>
+        <div class="logo-sub">× Sciencetech</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-bottom:16px">
+    <div class="nav-label">Menu</div>
+    <div class="nav-item active"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+    <div class="nav-item"><i class="ti ti-chart-line"></i>Analytics</div>
+    <div class="nav-item"><i class="ti ti-device-analytics"></i>Devices</div>
+    <div class="nav-item"><i class="ti ti-file-description"></i>ESG Reports</div>
+    <div class="nav-item"><i class="ti ti-bell"></i>Alerts</div>
+  </div>
+  <div class="sidebar-devices">
+    <div class="dev-header">Connected devices</div>
+    <div class="device-row">
+      <div class="device-top">
+        <div class="device-name">MAEKO Digester</div>
+        <div class="pulse-dot"></div>
+      </div>
+      <div class="device-tag">Organic Waste</div>
+      <div class="device-metrics">
+        <span class="d-chip">CO₂</span><span class="d-chip">GHG</span><span class="d-chip">Volume</span>
+      </div>
+      <div class="iot-row"><div class="pulse-dot" style="width:5px;height:5px"></div><span class="iot-text">IoT Live</span></div>
+    </div>
+    <div class="device-row">
+      <div class="device-top">
+        <div class="device-name">Air Purifier Pro</div>
+        <div class="pulse-dot"></div>
+      </div>
+      <div class="device-tag">Air Quality</div>
+      <div class="device-metrics">
+        <span class="d-chip">PM2.5</span><span class="d-chip">Bacteria</span><span class="d-chip">AQI</span>
+      </div>
+      <div class="iot-row"><div class="pulse-dot" style="width:5px;height:5px"></div><span class="iot-text">IoT Live</span></div>
+    </div>
+  </div>
+  <div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.07)">
+    <div style="font-size:10px;color:#4A6580;margin-bottom:4px">Hospital</div>
+    <div style="font-size:12px;font-weight:600;color:#C8DAE8">Siriraj Hospital</div>
+    <div style="font-size:10px;color:#1DB074;margin-top:2px">&#9679; ESG Compliant</div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title">AI Monitoring Dashboard</div>
+      <div class="page-sub">Real-time ESG data from Sciencetech devices</div>
+    </div>
+    <div class="topbar-right">
+      <div class="time-badge" id="clock">--:--:--</div>
+      <div class="live-pill"><div class="live-dot"></div>Live</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="kpi-row">
+      <div class="kpi green">
+        <div class="kpi-label"><i class="ti ti-leaf"></i>CO&#8322; Reduced</div>
+        <div><span class="kpi-val" id="co2">142</span><span class="kpi-unit">kg/day</span></div>
+        <div class="kpi-change up"><i class="ti ti-arrow-up" style="font-size:11px"></i>12% vs last week</div>
+      </div>
+      <div class="kpi amber">
+        <div class="kpi-label"><i class="ti ti-cloud"></i>GHG Emission</div>
+        <div><span class="kpi-val" id="ghg">38</span><span class="kpi-unit">tCO&#8322;e</span></div>
+        <div class="kpi-change down"><i class="ti ti-arrow-down" style="font-size:11px"></i>8% vs last month</div>
+      </div>
+      <div class="kpi blue">
+        <div class="kpi-label"><i class="ti ti-wind"></i>Air Quality Index</div>
+        <div><span class="kpi-val" id="aqi">24</span><span class="kpi-unit">AQI</span></div>
+        <div class="kpi-change up"><i class="ti ti-arrow-up" style="font-size:11px"></i>Good &mdash; 95th pct</div>
+      </div>
+      <div class="kpi red">
+        <div class="kpi-label"><i class="ti ti-trash"></i>Waste Processed</div>
+        <div><span class="kpi-val" id="waste">2.4</span><span class="kpi-unit">tons</span></div>
+        <div class="kpi-change up"><i class="ti ti-arrow-up" style="font-size:11px"></i>Biomass +&#3647;3,200</div>
+      </div>
+    </div>
+
+    <div class="mid-row">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-chart-line"></i>CO&#8322; &amp; GHG Emission Trend</div>
+          <div class="legend-row">
+            <div class="leg-item"><div class="leg-sq" style="background:#1DB074"></div>CO&#8322; reduced</div>
+            <div class="leg-item"><div class="leg-sq" style="background:#EF9F27"></div>GHG emission</div>
+          </div>
+        </div>
+        <div style="position:relative;height:200px">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-cpu"></i>Device Status</div>
+        </div>
+        <div class="device-list-card">
+          <div class="dvc">
+            <div class="dvc-head">
+              <div class="dvc-name">MAEKO Digester</div>
+              <div class="status-on">Online</div>
+            </div>
+            <div class="dvc-stats">
+              <div>
+                <div class="dvc-stat-label">CO&#8322; Today</div>
+                <div class="dvc-stat-val">142 kg</div>
+                <div class="bar-mini"><div class="bar-fill" style="width:71%;background:#1DB074"></div></div>
+              </div>
+              <div>
+                <div class="dvc-stat-label">Waste in</div>
+                <div class="dvc-stat-val">2.4 t</div>
+                <div class="bar-mini"><div class="bar-fill" style="width:60%;background:#EF9F27"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="dvc">
+            <div class="dvc-head">
+              <div class="dvc-name">Air Purifier Pro</div>
+              <div class="status-on">Online</div>
+            </div>
+            <div class="dvc-stats">
+              <div>
+                <div class="dvc-stat-label">PM2.5</div>
+                <div class="dvc-stat-val" id="pm">12 &micro;g</div>
+                <div class="bar-mini"><div class="bar-fill" style="width:24%;background:#378ADD"></div></div>
+              </div>
+              <div>
+                <div class="dvc-stat-label">AQI Score</div>
+                <div class="dvc-stat-val">24 / 100</div>
+                <div class="bar-mini"><div class="bar-fill" style="width:24%;background:#1DB074"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bot-row">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-file-check"></i>Auto ESG Reports</div>
+        </div>
+        <div class="report-rows">
+          <div class="rep-row">
+            <div class="rep-left">
+              <div class="rep-icon"><i class="ti ti-file-description"></i></div>
+              <div>
+                <div class="rep-name">Monthly GHG Report &mdash; May 2025</div>
+                <div class="rep-date">Generated: 01 Jun 2025 &middot; 08:00</div>
+              </div>
+            </div>
+            <div class="rep-badge badge-green">Ready</div>
+          </div>
+          <div class="rep-row">
+            <div class="rep-left">
+              <div class="rep-icon"><i class="ti ti-file-chart"></i></div>
+              <div>
+                <div class="rep-name">CO&#8322; Offset Certificate Q2</div>
+                <div class="rep-date">Generated: 15 Jun 2025 &middot; 09:15</div>
+              </div>
+            </div>
+            <div class="rep-badge badge-blue">Certified</div>
+          </div>
+          <div class="rep-row">
+            <div class="rep-left">
+              <div class="rep-icon"><i class="ti ti-wind"></i></div>
+              <div>
+                <div class="rep-name">Air Quality Weekly Summary</div>
+                <div class="rep-date">Scheduled: 22 Jun 2025 &middot; 07:00</div>
+              </div>
+            </div>
+            <div class="rep-badge badge-amber">Pending</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><i class="ti ti-bell-ringing"></i>Recent Alerts</div>
+        </div>
+        <div class="alerts-list">
+          <div class="alert-row ok">
+            <div class="alert-icon"><i class="ti ti-check"></i></div>
+            <div>
+              <div class="alert-msg">Air quality within safe threshold</div>
+              <div class="alert-time">2 min ago &middot; Air Purifier Pro</div>
+            </div>
+          </div>
+          <div class="alert-row info">
+            <div class="alert-icon"><i class="ti ti-info-circle"></i></div>
+            <div>
+              <div class="alert-msg">CO&#8322; offset milestone reached &mdash; 100 kg</div>
+              <div class="alert-time">18 min ago &middot; MAEKO Digester</div>
+            </div>
+          </div>
+          <div class="alert-row warn">
+            <div class="alert-icon"><i class="ti ti-alert-triangle"></i></div>
+            <div>
+              <div class="alert-msg">GHG spike detected &mdash; auto-adjusted</div>
+              <div class="alert-time">1 hr ago &middot; MAEKO Digester</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const labels=['00:00','02:00','04:00','06:00','08:00','10:00','12:00','14:00','16:00','18:00','20:00','22:00'];
+const co2Data=[120,130,125,140,138,142,135,148,150,142,145,142];
+const ghgData=[45,42,40,38,40,37,39,36,35,38,36,38];
+new Chart(document.getElementById('trendChart'),{
+  type:'line',
+  data:{labels,datasets:[
+    {label:'CO2',data:co2Data,borderColor:'#1DB074',backgroundColor:'rgba(29,176,116,0.08)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#1DB074',tension:0.4,fill:true},
+    {label:'GHG',data:ghgData,borderColor:'#EF9F27',backgroundColor:'rgba(239,159,39,0.06)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#EF9F27',borderDash:[4,3],tension:0.4,fill:true,yAxisID:'y2'}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{
+      x:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#4A6580',font:{size:10},maxRotation:0,autoSkip:true,maxTicksLimit:6}},
+      y:{grid:{color:'rgba(255,255,255,0.05)'},ticks:{color:'#4A6580',font:{size:10}},title:{display:true,text:'kg/day',color:'#4A6580',font:{size:10}}},
+      y2:{position:'right',grid:{display:false},ticks:{color:'#EF9F27',font:{size:10}},title:{display:true,text:'tCO2e',color:'#EF9F27',font:{size:10}}}
+    }
+  }
+});
+function tick(){document.getElementById('clock').textContent=new Date().toTimeString().slice(0,8);}
+tick();setInterval(tick,1000);
+let base={co2:142,ghg:38,aqi:24,pm:12};
+setInterval(()=>{
+  base.co2=Math.round(base.co2+(Math.random()-.4)*3);
+  base.ghg=Math.round(base.ghg+(Math.random()-.5)*2);
+  base.aqi=Math.max(10,Math.round(base.aqi+(Math.random()-.5)*2));
+  base.pm=Math.max(5,Math.round(base.pm+(Math.random()-.5)*1));
+  document.getElementById('co2').textContent=base.co2;
+  document.getElementById('ghg').textContent=base.ghg;
+  document.getElementById('aqi').textContent=base.aqi;
+  document.getElementById('waste').textContent=(2.4+Math.random()*.1).toFixed(1);
+  document.getElementById('pm').textContent=base.pm+' µg';
+},3000);
+</script>
+</body>
+</html>
